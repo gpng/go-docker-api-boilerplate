@@ -1,0 +1,19 @@
+version: '3.6'
+
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  api:
+    image: go-docker-api-boilerplate:latest
+    ports:
+      - 5000:5000
+    volumes:
+      - ./:/go/src/github.com/gpng/go-docker-api-boilerplate
+    links:
+      - db
+    environment:
+      - db_host=db

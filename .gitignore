@@ -1,0 +1,6 @@
+.env
+.env.prod
+deploy/
+bin/*
+db-data
+api
