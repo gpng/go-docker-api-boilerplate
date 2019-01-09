@@ -16,8 +16,9 @@ Builds a zip package with binary for deployment to AWS ElasticBeanstalk
 
 Check for dependancies
 
+install dep from https://github.com/golang/dep
+
 ```
-go get github.com/tools/godep
 dep ensure
 ```
 
