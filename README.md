@@ -2,9 +2,9 @@
 
 > Boilerplate for Go based REST API with PostgreSQL, with live reload using CompileDaemon.
 
+Structured based on splitting api routes via services, but not a full multicontainer micro-service build.
 Builds a docker container for PostgreSQL Database.
 Builds a docker container with live reload for Go REST API and links to Postgres container
-Builds a zip package with binary for deployment to AWS ElasticBeanstalk
 
 ## Table of Contents
 
@@ -12,19 +12,9 @@ Builds a zip package with binary for deployment to AWS ElasticBeanstalk
 - [Maintainers](#maintainers)
 - [License](#license)
 
-## Install
-
-Check for dependancies
-
-install dep from https://github.com/golang/dep
-
-```
-dep ensure
-```
-
 ## Usage
 
-1. Create your own .env using .env-sample
+1. Create your own .env using .sample.env
 
 2. Start docker containers
 
@@ -38,23 +28,27 @@ make up
 make logs
 ```
 
-4. Stop docker containers
+4. Visit `localhost:4000/some` to check if API is responding
+
+5. Generate docs from swagger comments
+
+```
+make generate-docs
+```
+
+6. Visit `localhost:4000/docs` for documentation if `DOCS=true` in .env
+
+7. Stop docker containers
 
 ```
 make down
 ```
 
-## Deploy
-
-1. Create .env.prod using .env.sample
-
-2. Build binary and zip
+## Test
 
 ```
-make deploy-prod
+make test
 ```
-
-3. Upload new .zip in deploy/ to AWS EB instane
 
 ## Maintainers
 

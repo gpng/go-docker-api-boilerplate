@@ -9,8 +9,9 @@ GOTEST=$(GOCMD) test
 
 # App parameters
 CONTAINER_TAG=go-docker-api-boilerplate
-DOCKERFILE=Dockerfile
-MAIN_PATH=cmd/api/main.go
+DOCKERFILE=Dockerfile.dev
+MAIN_FOLDER=cmd/api
+MAIN_PATH=$(MAIN_FOLDER)/main.go
 DEPLOY_FOLDER=deploy
 DEPLOY_BINARY_NAME=$(DEPLOY_FOLDER)/application
 ZIP_PATH=$(DEPLOY_FOLDER)/deploy-$(shell date +'%Y%m%d-%H%M%S').zip
@@ -26,18 +27,25 @@ up: default
 logs:
 	$(DOCKERCOMPOSECMD) logs -f
 
+dev: up logs
+
+run:
+	go build -o bin/application $(MAIN_PATH) && ./bin/application -docs
+
 down:
 	$(DOCKERCOMPOSECMD) down
 
 test:
-	$(GOTEST) -v -cover ./...
+	godotenv -f .test.env $(GOTEST) -cover ./...
 
 clean: down
 	@echo "=============cleaning up============="
 	$(DOCKERCMD) system prune -f
 	$(DOCKERCMD) volume prune -f
 
-deploy-prod:
-	GOARCH=amd64 GOOS=linux $(GOBUILD) -o $(DEPLOY_BINARY_NAME) $(MAIN_PATH)
-	cp .env.prod $(DEPLOY_FOLDER)/.env
-	zip $(ZIP_PATH) $(DEPLOY_BINARY_NAME) $(DEPLOY_FOLDER)/.env $(DEPLOY_FOLDER)/Procfile
+run-prod:
+	$(DOCKERCMD) build -t chanced-api-eb .
+	docker run -p 4000:5000 chanced-api-eb
+
+generate-docs:
+	swag init -g $(MAIN_PATH)

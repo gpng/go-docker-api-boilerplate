@@ -1,5 +1,9 @@
+# env variables
 .env
 .env.prod
-deploy/
+
+# build folder
 bin/*
+
+# db data
 db-data
