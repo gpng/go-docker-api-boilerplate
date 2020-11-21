@@ -11,6 +11,15 @@ Builds a docker container with live reload for Go REST API and links to Postgres
 - [Maintainers](#maintainers)
 - [License](#license)
 
+## Dependencies
+
+[goose](https://github.com/pressly/goose)
+
+[sqlc](https://dl.equinox.io/sqlc/sqlc/devel)
+
+[swaggo](https://github.com/swaggo/swag)
+
+
 ## Usage
 
 1. Create .env using .env.sample as example
@@ -45,8 +54,6 @@ Builds a docker container with live reload for Go REST API and links to Postgres
 
 ## Migrations
 
-[Install goose](https://github.com/pressly/goose)
-
 Create new migrations
 
 ```
@@ -66,8 +73,6 @@ env $(cat .env) make rollback
 ```
 
 ## Generating models
-
-[Install sqlc](https://dl.equinox.io/sqlc/sqlc/devel)
 
 ```
 make gen-models
