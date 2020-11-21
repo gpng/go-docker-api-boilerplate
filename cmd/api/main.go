@@ -13,10 +13,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gpng/go-docker-api-boilerplate/config"
-	"github.com/gpng/go-docker-api-boilerplate/connections/database"
-	"github.com/gpng/go-docker-api-boilerplate/services/somesvc"
-	vr "github.com/gpng/go-docker-api-boilerplate/utils/validator"
+	"github.com/gpng/go-docker-api-boilerplate/cmd/api/config"
+	"github.com/gpng/go-docker-api-boilerplate/cmd/api/handlers"
+	"github.com/gpng/go-docker-api-boilerplate/services/logger"
+	"github.com/gpng/go-docker-api-boilerplate/services/postgres"
+	"github.com/gpng/go-docker-api-boilerplate/services/validator"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -25,26 +26,29 @@ import (
 )
 
 func main() {
-	appConfig := config.New()
-
-	// initialise utils
-	validator := vr.New()
-
-	// initialise dependencies for service
-	// postgres
-	db, err := database.New(appConfig)
+	cfg, err := config.New()
 	if err != nil {
-		log.Fatalf("Failed to initialise DB connection")
-		return
+		log.Fatalf("failed to load env vars: %v", err)
 	}
 
-	someService := somesvc.New(db, validator)
+	// initialise services
+	l := logger.New()
+	defer l.Sync()
+
+	vr := validator.New()
+
+	_, err = postgres.New(cfg.DbHost, cfg.DbUser, cfg.DbName, cfg.DbPassword)
+	if err != nil {
+		log.Fatalf("failed to initialise DB connection: %v", err)
+	}
+
+	handlers := handlers.New(l, vr)
 
 	// initialise main router with basic middlewares, cors settings etc
-	router := mainRouter(appConfig.Docs)
+	router := mainRouter(cfg.Docs, cfg.CORS)
 
 	// mount services
-	router.Mount("/some", someService.Routes())
+	router.Mount("/", handlers.Routes())
 
 	err = http.ListenAndServe(":4000", router)
 	if err != nil {
@@ -52,7 +56,7 @@ func main() {
 	}
 }
 
-func mainRouter(docs bool) chi.Router {
+func mainRouter(docs bool, useCors bool) chi.Router {
 	router := chi.NewRouter()
 
 	// A good base middleware stack
@@ -61,11 +65,13 @@ func mainRouter(docs bool) chi.Router {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	c := cors.New(cors.Options{
-		AllowedHeaders: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-	})
-	router.Use(c.Handler)
+	if useCors {
+		c := cors.New(cors.Options{
+			AllowedHeaders: []string{"*"},
+			AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		})
+		router.Use(c.Handler)
+	}
 
 	if docs {
 		router.Get("/docs", func(w http.ResponseWriter, r *http.Request) {

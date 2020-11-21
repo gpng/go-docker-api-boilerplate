@@ -16,18 +16,18 @@ DEPLOY_FOLDER=deploy
 DEPLOY_BINARY_NAME=$(DEPLOY_FOLDER)/application
 ZIP_PATH=$(DEPLOY_FOLDER)/deploy-$(shell date +'%Y%m%d-%H%M%S').zip
 
-default:
+default: build up logs
+
+build:
 	@echo "=============building API============="
 	$(DOCKERCMD) build -f $(DOCKERFILE) -t $(CONTAINER_TAG) .
 
-up: default
+up:
 	@echo "=============starting API locally============="
 	$(DOCKERCOMPOSECMD) up -d
 
 logs:
 	$(DOCKERCOMPOSECMD) logs -f
-
-dev: up logs
 
 run:
 	go build -o bin/application $(MAIN_PATH) && ./bin/application -docs
@@ -36,7 +36,7 @@ down:
 	$(DOCKERCOMPOSECMD) down
 
 test:
-	godotenv -f .test.env $(GOTEST) -cover ./...
+	godotenv -f .test.env $(GOTEST) -cover ./... -count=1
 
 clean: down
 	@echo "=============cleaning up============="

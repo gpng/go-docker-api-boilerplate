@@ -1,4 +1,4 @@
-package somesvc
+package handlers
 
 import (
 	"github.com/go-chi/chi"
@@ -6,7 +6,7 @@ import (
 )
 
 // Routes for app
-func (s *Service) Routes() chi.Router {
+func (s *Handlers) Routes() chi.Router {
 	router := chi.NewRouter()
 
 	router.Get("/", s.handleStatus())
