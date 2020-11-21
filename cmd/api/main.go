@@ -18,6 +18,7 @@ import (
 	"github.com/gpng/go-docker-api-boilerplate/services/logger"
 	"github.com/gpng/go-docker-api-boilerplate/services/postgres"
 	"github.com/gpng/go-docker-api-boilerplate/services/validator"
+	"github.com/gpng/go-docker-api-boilerplate/sqlc/models"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -37,12 +38,14 @@ func main() {
 
 	vr := validator.New()
 
-	_, err = postgres.New(cfg.DbHost, cfg.DbUser, cfg.DbName, cfg.DbPassword)
+	db, err := postgres.New(cfg.DbHost, cfg.DbUser, cfg.DbName, cfg.DbPassword)
 	if err != nil {
 		log.Fatalf("failed to initialise DB connection: %v", err)
 	}
 
-	handlers := handlers.New(l, vr)
+	repo := models.New(db)
+
+	handlers := handlers.New(l, vr, db, repo)
 
 	// initialise main router with basic middlewares, cors settings etc
 	router := mainRouter(cfg.Docs, cfg.CORS)

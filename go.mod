@@ -13,8 +13,11 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.8.0
+	github.com/mailru/easyjson v0.7.6 // indirect
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
 	github.com/swaggo/swag v1.6.9
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect
+	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 )

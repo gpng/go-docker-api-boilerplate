@@ -12,17 +12,17 @@ func (c ContextKey) String() string {
 	return "context key " + string(c)
 }
 
-// message maps and status and message into JSON formatted string
+// message maps message into JSON formatted string
 func message(message string) map[string]interface{} {
 	return map[string]interface{}{"message": message}
 }
 
-// errorMessage maps status and message into JSON formatted string
+// errorMessage maps message and error code into JSON formatted string
 func errorMessage(errorCode int, message string) map[string]interface{} {
 	return map[string]interface{}{"errorCode": errorCode, "message": message}
 }
 
-// dataMessage maps data, status and message into JSON formatted string
+// dataMessage maps data and message into JSON formatted string
 func dataMessage(data interface{}, message string) map[string]interface{} {
 	return map[string]interface{}{"message": message, "data": data}
 }

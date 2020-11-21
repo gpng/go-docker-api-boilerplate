@@ -11,5 +11,7 @@ func (s *Handlers) Routes() chi.Router {
 
 	router.Get("/", s.handleStatus())
 
+	router.Get("/users", s.handleUsers())
+
 	return router
 }

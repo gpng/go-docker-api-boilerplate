@@ -2,7 +2,6 @@
 
 > Boilerplate for Go based REST API with PostgreSQL, with live reload using CompileDaemon.
 
-Structured based on splitting api routes via services, but not a full multicontainer micro-service build.
 Builds a docker container for PostgreSQL Database.
 Builds a docker container with live reload for Go REST API and links to Postgres container
 
@@ -14,35 +13,66 @@ Builds a docker container with live reload for Go REST API and links to Postgres
 
 ## Usage
 
-1. Create your own .env using .sample.env
+1. Create .env using .env.sample as example
 
-2. Start docker containers
+1. Start docker containers
+
+    ```
+    make
+    ```
+
+1. View logs
+
+    ```
+    make logs
+    ```
+
+1. Visit `localhost:4000/` to check if API is responding
+
+1. Generate docs from swagger comments
+
+    ```
+    make gen-docs
+    ```
+
+1. Visit `localhost:4000/docs` for documentation
+
+1. Stop docker containers
+
+    ```
+    make down
+    ```
+
+## Migrations
+
+[Install goose](https://github.com/pressly/goose)
+
+Create new migrations
 
 ```
-make up
+goose -dir sqlc/schemas create <migration_name> sql
 ```
 
-3. View logs
+Run migrations
 
 ```
-make logs
+env $(cat .env) make migrate
 ```
 
-4. Visit `localhost:4000/some` to check if API is responding
-
-5. Generate docs from swagger comments
+Rollback migrations
 
 ```
-make generate-docs
+env $(cat .env) make rollback
 ```
 
-6. Visit `localhost:4000/docs` for documentation if `DOCS=true` in .env
+## Generating models
 
-7. Stop docker containers
+[Install sqlc](https://dl.equinox.io/sqlc/sqlc/devel)
 
 ```
-make down
+make gen-models
 ```
+
 
 ## Test
 
@@ -56,4 +86,4 @@ make test
 
 ## License
 
-MIT © 2018 Gerald Png
+MIT © 2020 Gerald Png
