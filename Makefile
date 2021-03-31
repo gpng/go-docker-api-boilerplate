@@ -16,10 +16,7 @@ MAIN_PATH=$(MAIN_FOLDER)/main.go
 # Goose parameters for migrations
 GOOSECMD=goose
 DBSTRING="host=${DB_HOST} user=${DB_USER} dbname=${DB_NAME} sslmode=disable password=${DB_PASSWORD}"
-APISCHEMAPATH=db/migrations/
-
-# sqlc parameters
-SQLCCMD=sqlc
+MIGRATIONSPATH=db/migrations/
 
 default: build up logs
 
@@ -55,11 +52,8 @@ run-prod:
 gen-docs:
 	swag init -g $(MAIN_PATH)
 
-gen-models:
-	$(SQLCCMD) generate
-
 migrate:
-	$(GOOSECMD) -dir $(APISCHEMAPATH) postgres $(DBSTRING) up
+	$(GOOSECMD) -dir $(MIGRATIONSPATH) postgres $(DBSTRING) up
 
 rollback:
-	$(GOOSECMD) -dir $(APISCHEMAPATH) postgres $(DBSTRING) down
+	$(GOOSECMD) -dir $(MIGRATIONSPATH) postgres $(DBSTRING) down
