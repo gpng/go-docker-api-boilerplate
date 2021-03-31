@@ -15,10 +15,10 @@ import (
 
 	"github.com/gpng/go-docker-api-boilerplate/cmd/api/config"
 	"github.com/gpng/go-docker-api-boilerplate/cmd/api/handlers"
+	"github.com/gpng/go-docker-api-boilerplate/services"
 	"github.com/gpng/go-docker-api-boilerplate/services/logger"
 	"github.com/gpng/go-docker-api-boilerplate/services/postgres"
 	"github.com/gpng/go-docker-api-boilerplate/services/validator"
-	"github.com/gpng/go-docker-api-boilerplate/sqlc/models"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -43,7 +43,7 @@ func main() {
 		log.Fatalf("failed to initialise DB connection: %v", err)
 	}
 
-	repo := models.New(db)
+	repo := services.NewPostgresRespository(db)
 
 	handlers := handlers.New(l, vr, db, repo)
 

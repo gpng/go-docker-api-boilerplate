@@ -16,7 +16,7 @@ MAIN_PATH=$(MAIN_FOLDER)/main.go
 # Goose parameters for migrations
 GOOSECMD=goose
 DBSTRING="host=${DB_HOST} user=${DB_USER} dbname=${DB_NAME} sslmode=disable password=${DB_PASSWORD}"
-APISCHEMAPATH=sqlc/schemas/
+APISCHEMAPATH=db/migrations/
 
 # sqlc parameters
 SQLCCMD=sqlc

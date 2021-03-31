@@ -1,8 +1,9 @@
 package handlers
 
 import (
+	"github.com/gpng/go-docker-api-boilerplate/repository/interfaces"
 	vr "github.com/gpng/go-docker-api-boilerplate/services/validator"
-	"github.com/gpng/go-docker-api-boilerplate/sqlc/models"
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
@@ -10,16 +11,16 @@ import (
 type Handlers struct {
 	logger    *zap.Logger
 	validator *vr.Validator
-	db        models.DBTX
-	repo      models.Querier
+	db        *sqlx.DB
+	repo      interfaces.Repository
 }
 
 // New service
 func New(
 	logger *zap.Logger,
 	validator *vr.Validator,
-	db models.DBTX,
-	repo models.Querier,
+	db *sqlx.DB,
+	repo interfaces.Repository,
 ) *Handlers {
 	return &Handlers{logger, validator, db, repo}
 }

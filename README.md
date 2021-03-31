@@ -57,7 +57,7 @@ Builds a docker container with live reload for Go REST API and links to Postgres
 Create new migrations
 
 ```
-goose -dir sqlc/schemas create <migration_name> sql
+goose -dir db/migrations create <migration_name> sql
 ```
 
 Run migrations
