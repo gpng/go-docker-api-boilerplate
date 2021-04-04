@@ -57,3 +57,8 @@ migrate:
 
 rollback:
 	$(GOOSECMD) -dir $(MIGRATIONSPATH) postgres $(DBSTRING) down
+
+rollback-all:
+	$(GOOSECMD) -dir $(MIGRATIONSPATH) postgres $(DBSTRING) down-to 0
+
+reset: rollback-all migrate

@@ -16,6 +16,7 @@ import (
 	"github.com/gpng/go-docker-api-boilerplate/cmd/api/config"
 	"github.com/gpng/go-docker-api-boilerplate/cmd/api/handlers"
 	"github.com/gpng/go-docker-api-boilerplate/services"
+	"github.com/gpng/go-docker-api-boilerplate/services/jwt"
 	"github.com/gpng/go-docker-api-boilerplate/services/logger"
 	"github.com/gpng/go-docker-api-boilerplate/services/postgres"
 	"github.com/gpng/go-docker-api-boilerplate/services/validator"
@@ -38,6 +39,8 @@ func main() {
 
 	vr := validator.New()
 
+	jwt := jwt.New(cfg.JwtSecretKey, cfg.JwtIssuer, cfg.JwtAccessExpiration, cfg.JwtRefreshExpiration)
+
 	db, err := postgres.New(cfg.DbHost, cfg.DbUser, cfg.DbName, cfg.DbPassword)
 	if err != nil {
 		log.Fatalf("failed to initialise DB connection: %v", err)
@@ -45,7 +48,7 @@ func main() {
 
 	repo := services.NewPostgresRespository(db)
 
-	handlers := handlers.New(l, vr, db, repo)
+	handlers := handlers.New(l, vr, jwt, db, repo)
 
 	// initialise main router with basic middlewares, cors settings etc
 	router := mainRouter(cfg.Docs, cfg.CORS)
