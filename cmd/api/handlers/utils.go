@@ -3,12 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
-// ContextKey is the unique key that represents a context value
-type ContextKey string
+// contextKey is the unique key that represents a context value
+type contextKey string
 
-func (c ContextKey) String() string {
+func (c contextKey) String() string {
 	return "context key " + string(c)
 }
 
@@ -37,4 +39,17 @@ func respond(w http.ResponseWriter, data map[string]interface{}) {
 func respondWithStatus(w http.ResponseWriter, statusCode int, data map[string]interface{}) {
 	w.WriteHeader(statusCode)
 	respond(w, data)
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
+}
+
+func checkPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

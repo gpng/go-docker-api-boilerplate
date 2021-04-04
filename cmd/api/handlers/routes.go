@@ -6,12 +6,29 @@ import (
 )
 
 // Routes for app
-func (s *Handlers) Routes() chi.Router {
+func (h *Handlers) Routes() chi.Router {
 	router := chi.NewRouter()
 
-	router.Get("/", s.handleStatus())
+	router.Get("/", h.handleStatus())
 
-	router.Get("/users", s.handleUsers())
+	// protected route example
+	router.Group(func(r chi.Router) {
+		r.Use(h.requireAuth)
+
+		r.Get("/protected", h.handleProtectedStatus())
+	})
+
+	router.Mount("/auth", h.authRoutes())
 
 	return router
+}
+
+func (h *Handlers) authRoutes() chi.Router {
+	r := chi.NewRouter()
+
+	r.Post("/signup", h.handleSignup())
+	r.Post("/login", h.handleLogin())
+	r.Post("/refresh", h.handleRefresh())
+
+	return r
 }

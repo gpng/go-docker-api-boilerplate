@@ -8,6 +8,7 @@ import (
 
 type repository struct {
 	interfaces.UserRepository
+	interfaces.SessionRepository
 }
 
 func NewPostgresRespository(db *sqlx.DB) interfaces.Repository {
@@ -17,5 +18,6 @@ func NewPostgresRespository(db *sqlx.DB) interfaces.Repository {
 func newRepository(db *sqlx.DB) *repository {
 	return &repository{
 		postgres.NewUserRepository(),
+		postgres.NewSessionRepository(),
 	}
 }
